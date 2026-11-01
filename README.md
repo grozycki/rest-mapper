@@ -9,3 +9,5 @@ Careful polling of JSON APIs and mapping of their values, with no framework. It 
 - `policy`: decide when the next request may happen.
 
 Package modules import each other relatively, so the package can be copied into another project.
+
+The integration is [home-assistant-rest-mapper](https://github.com/grozycki/home-assistant-rest-mapper). The package is not on PyPI yet.

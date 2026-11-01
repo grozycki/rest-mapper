@@ -9,6 +9,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
+from conftest import load_fixture
 from rest_mapper.mapping import (
     Failure,
     GeometryPath,
@@ -225,3 +226,16 @@ def test_huge_integer_as_a_position() -> None:
     assert read_position({"lat": HUGE, "lon": 1}, LAT_LON) is Failure.TYPE_MISMATCH
     point: JsonValue = {"g": {"type": "Point", "coordinates": [HUGE, 1]}}
     assert read_position(point, GEOMETRY) is Failure.TYPE_MISMATCH
+
+
+def test_tomtom_line_position() -> None:
+    body = load_fixture("tomtom_incidents.json")
+    assert isinstance(body, dict)
+    incidents = body["incidents"]
+    assert isinstance(incidents, list)
+    spec = GeometryPath(parse_path("geometry", relative=True))
+    for incident in incidents:
+        position = read_position(incident, spec)
+        assert isinstance(position, Position)
+        assert 49 < position.latitude < 51
+        assert 18 < position.longitude < 20

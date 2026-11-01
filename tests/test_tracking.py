@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from conftest import load_fixture
 from rest_mapper.paths import JsonValue, parse_path
 from rest_mapper.tracking import ItemTracker, read_items
 
@@ -130,3 +131,11 @@ def test_malformed_restore_is_ignored() -> None:
     tracker = ItemTracker()
     tracker.restore({"absences": "bad"})
     assert not tracker.has_baseline
+
+
+def test_tomtom_incidents() -> None:
+    body = load_fixture("tomtom_incidents.json")
+    items = read_items(body, parse_path("$.incidents"), parse_path("properties.id", relative=True))
+    assert items is not None
+    assert items.skipped == 0
+    assert items.items

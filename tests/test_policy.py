@@ -262,3 +262,10 @@ def test_other_failure_ends_a_rate_limit_streak() -> None:
     subject.record_failure()
     subject.record_rate_limited(None)
     assert subject.state.rate_limit_streak == 1
+
+
+def test_success_ends_an_authentication_stop() -> None:
+    subject, _ = policy()
+    subject.record_auth_failed()
+    subject.record_fetched(None, None)
+    assert subject.next_request_at() is not None
